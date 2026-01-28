@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const basoController = require('../controller/basoController');
+const auth = require('../middleware/auth');
 
 router.get('/api', (req, res) => {
     res.send('Selamat datang di API SMK Telkom Makassar kota');
@@ -15,16 +16,16 @@ router.get('/data/:id', (req, res) => {
 // 3. objek reqq dan res
 
 // 4. implementasi get
-router.get('/', basoController.tampilData);
+router.get('/', auth, basoController.tampilData);
 
 // 5. implementasi post
-router.post('/', basoController.createData);
+router.post('/', auth, basoController.createData);
 
 // 6. implementasi put
-router.put('/:id', basoController.updateData);
+router.put('/:id', auth, basoController.updateData);
 
 // 7. implementasi delet
-router.delete('/:id', basoController.deleteData);
+router.delete('/:id', auth, basoController.deleteData);
 
 // 8. implementasi get by id
 router.get('/:id', basoController.getById);
