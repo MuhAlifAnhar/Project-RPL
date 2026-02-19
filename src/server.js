@@ -17,8 +17,6 @@ app.use('/user', userRouter);
 //3. penerapan middleware untuk menangani error
 app.use(errorHandler);
 
-
-
 app.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
 })

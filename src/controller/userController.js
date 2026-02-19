@@ -4,19 +4,19 @@ const jwt = require('jsonwebtoken');
 
 const register = async (req, res, next) => {
     try {
-        const { username, password } = req.body;
+        const { username, password, role } = req.body;
 
         if (!username || !password) {
             return res.status(400).json({
                 status: 'error',
                 message: 'username dan password wajib diisi'
             });
-        }
+    }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
-        await db.execute(query, [username, hashedPassword]);
+        const query = 'INSERT INTO users (username, password, role) VALUES (?, ?, ?)';
+        await db.execute(query, [username, hashedPassword, role || 'user']);
 
         return res.status(201).json({
             status: 'success',
@@ -53,7 +53,7 @@ const login = async (req, res, next) => {
 
         // bandingkan password mu di sini dengan password di database
         const isMatch = await bcrypt.compare(password, user.password);
-
+ 
         if (!isMatch) {
             return res.status(401).json({
                 message: 'username atau password salah'
@@ -62,7 +62,11 @@ const login = async (req, res, next) => {
 
         // buat token mu untuk user
         const token = jwt.sign(
-            { id: user.id, username: user.username },
+            {
+                id: user.id,
+                username: user.username,
+                role: user.role
+            },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
