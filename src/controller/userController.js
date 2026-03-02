@@ -1,6 +1,7 @@
 const db = require('../config/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { addToBlacklist } = require('../utils/tokenBlacklist');
 
 const register = async (req, res, next) => {
     try {
@@ -11,7 +12,7 @@ const register = async (req, res, next) => {
                 status: 'error',
                 message: 'username dan password wajib diisi'
             });
-    }
+        }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -81,7 +82,24 @@ const login = async (req, res, next) => {
     }
 };
 
+const logout = (req, res) => {
+    const token = req.headers.authorization;
+
+    if (!token) {
+        return res.status(400).json({
+            message: 'Token tidak ditemukan'
+        });
+    }
+
+    addToBlacklist(token);
+
+    return res.status(200).json({
+        message: 'Logout berhasil'
+    });
+};
+
 module.exports = {
     register,
-    login
+    login,
+    logout
 };

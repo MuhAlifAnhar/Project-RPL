@@ -1,11 +1,20 @@
 const jwt = require('jsonwebtoken');
 
+const { isBlacklisted } = require('../utils/tokenBlacklist');
+
+
 const auth = (req, res, next) => {
     const token = req.headers.authorization;
 
     if (!token) {
         return res.status(401).json({
             message: 'Unauthorized'
+        });
+    }
+
+    if (isBlacklisted(token)) {
+        return res.status(401).json({
+            message: 'Token sudah logout'
         });
     }
 
