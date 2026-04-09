@@ -1,6 +1,7 @@
 const db = require('../config/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
 const { addToBlacklist } = require('../utils/tokenBlacklist');
 
 const register = async (req, res, next) => {
@@ -83,9 +84,11 @@ const login = async (req, res, next) => {
 };
 
 const logout = (req, res) => {
+
     const token = req.headers.authorization;
 
     if (!token) {
+        
         return res.status(400).json({
             message: 'Token tidak ditemukan'
         });
